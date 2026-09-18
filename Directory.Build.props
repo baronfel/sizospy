@@ -10,4 +10,7 @@
     <UseArtifactsOutput>true</UseArtifactsOutput>
     <DebugType Condition="'$(Configuration)' == 'Release'">none</DebugType>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Sizospy.Cli' Or '$(MSBuildProjectName)' == 'Sizospy.Core'">
+    <RuntimeFrameworkVersion>11.0.0-rc.1.26425.128</RuntimeFrameworkVersion>
+  </PropertyGroup>
 </Project>

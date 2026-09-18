@@ -25,6 +25,7 @@ internal static class DatabaseWriter
                 "output-conflict");
         }
 
+        SqliteRuntime.EnsureInitialized();
         var temporaryPath = Path.Combine(directory, $".{Path.GetFileName(fullPath)}.{Guid.NewGuid():N}.tmp");
         try
         {
@@ -38,7 +39,7 @@ internal static class DatabaseWriter
             await using (var connection = new SqliteConnection(connectionString))
             {
                 await connection.OpenAsync(cancellationToken);
-                await ExecuteAsync(connection, null, SchemaSql, cancellationToken);
+                await ExecuteAsync(connection, null, GetSchemaSql(SqliteRuntime.VersionNumber), cancellationToken);
                 await using var transaction = (SqliteTransaction)await connection.BeginTransactionAsync(cancellationToken);
 
                 await InsertMetadataAsync(connection, transaction, model, cancellationToken);
@@ -114,6 +115,11 @@ internal static class DatabaseWriter
 
     private static bool HasDependencyGraph(ImportModel model) =>
         model.Metadata.ContainsKey("dgml_edge_direction");
+
+    internal static string GetSchemaSql(int sqliteVersionNumber) =>
+        SqliteRuntime.SupportsStrictTables(sqliteVersionNumber)
+            ? SchemaSql
+            : SchemaSql.Replace(" STRICT;", ";", StringComparison.Ordinal);
 
     private static async Task InsertLogicalMembersAsync(
         SqliteConnection connection,

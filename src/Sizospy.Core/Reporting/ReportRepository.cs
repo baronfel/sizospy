@@ -237,6 +237,7 @@ internal sealed class ReportRepository(string databasePath)
             throw new SizospyException($"Database '{_databasePath}' does not exist.", "database-not-found");
         }
 
+        SqliteRuntime.EnsureInitialized();
         try
         {
             var connection = new SqliteConnection(new SqliteConnectionStringBuilder
