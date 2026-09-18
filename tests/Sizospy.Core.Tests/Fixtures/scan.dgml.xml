@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="0" Label="RootMethod" />
+    <Node Id="1" Label="DependencyMethod" />
+    <Node Id="2" Label="Conditional pair" />
+  </Nodes>
+  <Links>
+    <Link Source="0" Target="1" Reason="direct call" Stroke="#FF0000" />
+    <Link Source="0" Target="2" Reason="Primary" Stroke="#00FF00" />
+    <Link Source="2" Target="1" Reason="conditional dependency" Stroke="#0000FF" />
+  </Links>
+</DirectedGraph>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ObjectNodes>
+  <MethodCode Name="RootMethod" Length="128" Hash="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
+  <GCInfo Name="RootMethod" Length="12" Hash="bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" />
+  <Metadata Length="42" Hash="cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" />
+</ObjectNodes>
