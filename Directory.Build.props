@@ -8,5 +8,6 @@
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <Deterministic>true</Deterministic>
     <UseArtifactsOutput>true</UseArtifactsOutput>
+    <DebugType Condition="'$(Configuration)' == 'Release'">none</DebugType>
   </PropertyGroup>
 </Project>

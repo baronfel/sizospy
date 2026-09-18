@@ -10,6 +10,7 @@
     <RuntimeFrameworkVersion>11.0.0-rc.1.26425.128</RuntimeFrameworkVersion>
     <InvariantGlobalization>true</InvariantGlobalization>
     <StripSymbols>true</StripSymbols>
+    <NativeDebugSymbols>false</NativeDebugSymbols>
     <PackageId>sizospy</PackageId>
     <Version>0.1.0</Version>
     <Authors>Sizospy contributors</Authors>
@@ -20,7 +21,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sizospy.Core\Sizospy.Core.csproj" />
-    <PackageReference Include="System.CommandLine" Version="2.0.0" />
+    <PackageReference Include="System.CommandLine" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />

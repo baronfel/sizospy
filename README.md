@@ -194,6 +194,8 @@ Stable IDs derive from compiler identities and logical ownership. Numeric IDs ar
 
 ## Build and test
 
+Package versions are centralized in `Directory.Packages.props`. `NuGet.Config` restricts restore to NuGet.org.
+
 Restore and test the solution:
 
 ```powershell
@@ -210,6 +212,8 @@ dotnet publish src\Sizospy.Cli\Sizospy.Cli.csproj `
   --no-restore `
   /bl:artifacts\log\publish.binlog
 ```
+
+Release builds do not generate PDB files. RID packages contain runtime files and generated XML documentation.
 
 ## Pack a RID-specific SDK tool
 
