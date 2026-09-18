@@ -10,6 +10,16 @@ public sealed class StorageAndReportingTests
     public TestContext TestContext { get; set; } = null!;
 
     [TestMethod]
+    public void SchemaUsesStrictTablesOnlyWhenSupported()
+    {
+        Assert.IsFalse(DatabaseWriter.GetSchemaSql(SqliteRuntime.StrictTablesVersion - 1)
+            .Contains(" STRICT;", StringComparison.Ordinal));
+        StringAssert.Contains(
+            DatabaseWriter.GetSchemaSql(SqliteRuntime.StrictTablesVersion),
+            " STRICT;");
+    }
+
+    [TestMethod]
     public async Task DatabaseRoundTripProducesMetricsAndAllFormats()
     {
         var directory = Path.Combine(Path.GetTempPath(), $"sizospy-tests-{Guid.NewGuid():N}");
@@ -75,6 +85,13 @@ public sealed class StorageAndReportingTests
             {
                 await connection.OpenAsync(TestContext.CancellationToken);
                 await using var command = connection.CreateCommand();
+                command.CommandText =
+                    "SELECT COUNT(*) FROM sqlite_schema WHERE type = 'table' AND sql LIKE '% STRICT';";
+                var strictTableCount = (long)(await command.ExecuteScalarAsync(TestContext.CancellationToken) ?? 0L);
+                Assert.AreEqual(
+                    SqliteRuntime.SupportsStrictTables(SqliteRuntime.VersionNumber),
+                    strictTableCount > 0);
+
                 command.CommandText = "UPDATE schema_info SET version = 999;";
                 await command.ExecuteNonQueryAsync(TestContext.CancellationToken);
             }

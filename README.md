@@ -8,6 +8,7 @@ It imports NativeAOT diagnostic artifacts into SQLite. It then produces determin
 
 - .NET SDK 11 or later for the current package
 - A RID-specific `sizospy` package for the operating system
+- The operating system's SQLite runtime library (`libsqlite3.so.0` on Linux)
 - An MSTAT file from a NativeAOT publish
 - A scan DGML file for retained-size analysis
 
@@ -57,6 +58,11 @@ Use the scan DGML file with `--dgml`. Sizospy does not use the code-generation D
 
 Sizospy parses DGML and map XML as local, namespace-agnostic streams. It does not resolve DTDs,
 external entities, namespace URLs, or other network resources.
+
+Sizospy uses the SQLite library supplied by the operating system. Windows uses `winsqlite3.dll`,
+Linux uses `libsqlite3.so.0` (or `libsqlite3.so`), and macOS uses `/usr/lib/libsqlite3.dylib`.
+SQLite 3.37 and later use strict tables, while older versions receive the same schema without the
+optional `STRICT` table qualifier.
 
 ## Import
 
@@ -214,31 +220,33 @@ dotnet restore Sizospy.slnx /bl:artifacts\log\restore.binlog
 dotnet test Sizospy.slnx -c Release --no-restore /bl:artifacts\log\test.binlog
 ```
 
-Publish the NativeAOT executable for Windows x64:
+Sizospy targets `win-x64`, `win-arm64`, `linux-x64`, `linux-arm64`, and `osx-arm64`. Publish each
+NativeAOT executable on its target operating system. For example, on Windows x64:
 
 ```powershell
 dotnet publish src\Sizospy.Cli\Sizospy.Cli.csproj `
   -c Release `
   -r win-x64 `
-  --no-restore `
   /bl:artifacts\log\publish.binlog
 ```
 
 Release builds do not generate PDB files. RID packages contain runtime files and generated XML documentation.
 
-## Pack a RID-specific SDK tool
+## Pack RID-specific SDK tools
 
-Pass all required runtime identifiers during pack:
+Create each NativeAOT implementation package on its target operating system with `-r`. For example,
+create the Windows x64 package with:
 
 ```powershell
 dotnet pack src\Sizospy.Cli\Sizospy.Cli.csproj `
   -c Release `
-  --no-restore `
-  -p:ToolPackageRuntimeIdentifiers=win-x64 `
+  -r win-x64 `
   /bl:artifacts\log\pack.binlog
 ```
 
-The SDK creates a pointer package and one implementation package for each RID. Add RIDs with a semicolon-separated property value.
+The project declares `win-x64`, `win-arm64`, `linux-x64`, `linux-arm64`, and `osx-arm64`. Run
+`dotnet pack` without `-r` once to create the pointer package after creating the implementation
+packages.
 
 Test version 0.1.0 from the local package output:
 
