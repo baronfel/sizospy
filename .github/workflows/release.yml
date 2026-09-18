@@ -1,0 +1,189 @@
+name: Build and publish packages
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: packages-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_type != 'tag' }}
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Test
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts/log | Out-Null
+          dotnet test Sizospy.slnx -c Release /bl:artifacts/log/test.binlog
+
+      - name: Upload test binary log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-binlog
+          path: artifacts/log/test.binlog
+          if-no-files-found: ignore
+          retention-days: 7
+
+  build-rid-package:
+    name: Pack ${{ matrix.rid }}
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rid: win-x64
+            runner: windows-latest
+          - rid: win-arm64
+            runner: windows-11-arm
+          - rid: linux-x64
+            runner: ubuntu-latest
+          - rid: linux-arm64
+            runner: ubuntu-24.04-arm
+          - rid: osx-arm64
+            runner: macos-15
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Pack RID package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts/log | Out-Null
+          dotnet pack src/Sizospy.Cli/Sizospy.Cli.csproj -c Release -r ${{ matrix.rid }} --output artifacts/packages /bl:artifacts/log/pack-${{ matrix.rid }}.binlog
+
+      - name: Upload RID package
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-${{ matrix.rid }}
+          path: artifacts/packages/*.nupkg
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload package binary log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: binlog-${{ matrix.rid }}
+          path: artifacts/log/pack-${{ matrix.rid }}.binlog
+          if-no-files-found: ignore
+          retention-days: 7
+
+  build-pointer-package:
+    name: Pack pointer package
+    needs: build-rid-package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Download RID packages
+        uses: actions/download-artifact@v5
+        with:
+          pattern: package-*
+          path: artifacts/packages
+          merge-multiple: true
+
+      - name: Pack pointer package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts/log | Out-Null
+          dotnet pack src/Sizospy.Cli/Sizospy.Cli.csproj -c Release -p:CreateRidSpecificToolPackages=false --output artifacts/packages /bl:artifacts/log/pack-pointer.binlog
+
+      - name: Upload all packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: artifacts/packages/*.nupkg
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload pointer package binary log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: binlog-pointer
+          path: artifacts/log/pack-pointer.binlog
+          if-no-files-found: ignore
+          retention-days: 7
+
+  publish:
+    name: Publish to NuGet.org
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+    needs: build-pointer-package
+    runs-on: ubuntu-latest
+    environment: nuget.org
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Download packages
+        uses: actions/download-artifact@v5
+        with:
+          name: packages
+          path: artifacts/packages
+
+      - name: Verify release packages
+        shell: pwsh
+        run: |
+          $version = $env:GITHUB_REF_NAME -replace '^v', ''
+          $packageNames = @(
+            "sizospy.win-x64.$version.nupkg"
+            "sizospy.win-arm64.$version.nupkg"
+            "sizospy.linux-x64.$version.nupkg"
+            "sizospy.linux-arm64.$version.nupkg"
+            "sizospy.osx-arm64.$version.nupkg"
+            "sizospy.$version.nupkg"
+          )
+
+          foreach ($packageName in $packageNames) {
+            $packagePath = Join-Path artifacts/packages $packageName
+            if (-not (Test-Path $packagePath -PathType Leaf)) {
+              throw "Tag $env:GITHUB_REF_NAME does not match the package version. Missing $packageName."
+            }
+          }
+
+      - name: Log in to NuGet.org
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+
+      - name: Publish packages
+        shell: pwsh
+        env:
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push "artifacts/packages/*.nupkg" `
+            --source https://api.nuget.org/v3/index.json `
+            --api-key $env:NUGET_API_KEY

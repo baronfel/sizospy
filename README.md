@@ -211,6 +211,9 @@ Stable IDs derive from compiler identities and logical ownership. Numeric IDs ar
 
 NuGet package versions are centralized in `Directory.Packages.props`. `global.json` pins the .NET and MSTest SDKs.
 
+`CHANGELOG.md` is the source for the tool version and NuGet release notes. The
+`Ionide.KeepAChangelog.Tasks` package applies the latest released changelog entry during the build.
+
 `NuGet.Config` maps all packages to NuGet.org. Tests use MSTest with Microsoft Testing Platform.
 
 Restore and test the solution:
@@ -244,9 +247,17 @@ dotnet pack src\Sizospy.Cli\Sizospy.Cli.csproj `
   /bl:artifacts\log\pack.binlog
 ```
 
-The project declares `win-x64`, `win-arm64`, `linux-x64`, `linux-arm64`, and `osx-arm64`. Run
-`dotnet pack` without `-r` once to create the pointer package after creating the implementation
-packages.
+The project declares `win-x64`, `win-arm64`, `linux-x64`, `linux-arm64`, and `osx-arm64`.
+Create the pointer package after you create the implementation packages:
+
+```powershell
+dotnet pack src\Sizospy.Cli\Sizospy.Cli.csproj `
+  -c Release `
+  -p:CreateRidSpecificToolPackages=false `
+  /bl:artifacts\log\pack-pointer.binlog
+```
+
+The property prevents the pointer pack from rebuilding compatible RID packages on the current host.
 
 Test version 0.1.0 from the local package output:
 
@@ -256,6 +267,34 @@ dnx sizospy@0.1.0 `
   --yes `
   -- --help
 ```
+
+## Release
+
+Move the release changes from `Unreleased` to a dated version in `CHANGELOG.md`.
+The version must use Semantic Versioning.
+
+Push a matching `v<version>` tag. The `release.yml` workflow builds these packages on matching hosted runners:
+
+- `sizospy.win-x64`
+- `sizospy.win-arm64`
+- `sizospy.linux-x64`
+- `sizospy.linux-arm64`
+- `sizospy.osx-arm64`
+- `sizospy`, which is the pointer package
+
+The workflow publishes the five RID packages before it publishes the pointer package.
+Pull requests and `main` pushes build the same package set without publishing it.
+
+Configure trusted publishing before the first release:
+
+1. Create a GitHub environment named `nuget.org`.
+2. Add the `NUGET_USER` variable to that environment.
+3. Create a NuGet.org trusted publishing policy for repository `baronfel/sizospy`.
+4. Set the policy workflow file to `release.yml`.
+5. Set the policy environment to `nuget.org`.
+6. Give the policy access to `sizospy` and its RID package IDs.
+
+The publish job uses GitHub OIDC and a short-lived NuGet API key. It does not use a stored NuGet API key.
 
 ## Limitations
 
