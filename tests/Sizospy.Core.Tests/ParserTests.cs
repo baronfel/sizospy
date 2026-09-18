@@ -25,6 +25,45 @@ public sealed class ParserTests
     }
 
     [TestMethod]
+    public async Task DgmlIgnoresNamespacePrefixesAndDecodesAttributeEntities()
+    {
+        var path = Path.GetTempFileName();
+        try
+        {
+            await File.WriteAllTextAsync(
+                path,
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <d:DirectedGraph xmlns:d="urn:local">
+                  <d:Nodes>
+                    <d:Node Id="0" Label="Root&lt;T&gt;" IsRoot="true" />
+                    <d:Node Id="1" Label="Dependency &amp; data" />
+                  </d:Nodes>
+                  <d:Links>
+                    <d:Link Source="0" Target="1" Reason="quoted &quot;call&quot; &#x23;1" />
+                  </d:Links>
+                </d:DirectedGraph>
+                """,
+                TestContext.CancellationToken);
+            var builder = new ImportBuilder();
+
+            await DgmlParser.ParseAsync(path, builder, TestContext.CancellationToken);
+
+            var root = Single(builder.Nodes, node => node.CompilerIdentity == "Root<T>");
+            var dependency = Single(builder.Nodes, node => node.CompilerIdentity == "Dependency & data");
+            Assert.IsTrue(root.IsRoot);
+            Assert.IsTrue(builder.Edges.Any(edge =>
+                edge.SourceNodeId == root.Id &&
+                edge.TargetNodeId == dependency.Id &&
+                edge.Reason == "quoted \"call\" #1"));
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [TestMethod]
     public async Task MapParsesOpenEndedObjectKindsAndOptionalNames()
     {
         var builder = new ImportBuilder();
@@ -124,6 +163,55 @@ public sealed class ParserTests
         {
             File.Delete(path);
         }
+    }
+
+    [TestMethod]
+    public async Task DgmlRejectsDtdDeclarations()
+    {
+        var path = Path.GetTempFileName();
+        try
+        {
+            await File.WriteAllTextAsync(
+                path,
+                "<!DOCTYPE DirectedGraph><DirectedGraph />",
+                TestContext.CancellationToken);
+            var error = await Assert.ThrowsExactlyAsync<SizospyException>(
+                () => DgmlParser.ParseAsync(path, new ImportBuilder(), TestContext.CancellationToken));
+            Assert.AreEqual("malformed-dgml", error.Code);
+            StringAssert.Contains(error.Message, "DTD");
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [TestMethod]
+    public async Task DgmlRejectsMultipleRootElements()
+    {
+        var path = Path.GetTempFileName();
+        try
+        {
+            await File.WriteAllTextAsync(
+                path,
+                "<DirectedGraph /><DirectedGraph />",
+                TestContext.CancellationToken);
+            var error = await Assert.ThrowsExactlyAsync<SizospyException>(
+                () => DgmlParser.ParseAsync(path, new ImportBuilder(), TestContext.CancellationToken));
+            Assert.AreEqual("malformed-dgml", error.Code);
+            StringAssert.Contains(error.Message, "more than one root");
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [TestMethod]
+    public void CoreAssemblyDoesNotReferenceSystemPrivateXml()
+    {
+        Assert.IsFalse(typeof(ImportService).Assembly.GetReferencedAssemblies()
+            .Any(reference => reference.Name == "System.Private.Xml"));
     }
 
     private static string Fixture(string name) =>

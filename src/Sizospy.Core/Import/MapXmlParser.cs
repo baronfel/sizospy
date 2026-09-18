@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Xml;
 
 namespace Sizospy.Import;
 
@@ -12,27 +11,14 @@ internal static class MapXmlParser
     {
         try
         {
-            await using var stream = File.OpenRead(path);
-            using var reader = XmlReader.Create(stream, new XmlReaderSettings
-            {
-                Async = true,
-                DtdProcessing = DtdProcessing.Prohibit,
-                IgnoreComments = true,
-                IgnoreWhitespace = true,
-            });
+            using var reader = new LocalXmlReader(File.OpenRead(path));
 
             var parsedRanges = 0;
             var skippedRecords = 0;
             var usingMapSizes = false;
             var identityOccurrences = new Dictionary<string, int>(StringComparer.Ordinal);
-            while (await reader.ReadAsync())
+            while (await reader.ReadAsync(cancellationToken))
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                if (reader.NodeType != XmlNodeType.Element)
-                {
-                    continue;
-                }
-
                 if (reader.LocalName == "ObjectNodes")
                 {
                     continue;
@@ -109,7 +95,7 @@ internal static class MapXmlParser
             builder.Metadata["map_ranges"] = parsedRanges.ToString(CultureInfo.InvariantCulture);
             builder.Metadata["map_accounted_size"] = builder.Ranges.Sum(r => r.Size).ToString(CultureInfo.InvariantCulture);
         }
-        catch (XmlException ex)
+        catch (LocalXmlException ex)
         {
             throw new SizospyException(
                 $"Malformed map XML '{path}' at line {ex.LineNumber}, position {ex.LinePosition}: {ex.Message}",
@@ -122,7 +108,7 @@ internal static class MapXmlParser
         }
     }
 
-    private static string? First(XmlReader reader, params string[] names)
+    private static string? First(LocalXmlReader reader, params string[] names)
     {
         foreach (var name in names)
         {

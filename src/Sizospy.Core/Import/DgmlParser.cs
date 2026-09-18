@@ -1,5 +1,3 @@
-using System.Xml;
-
 namespace Sizospy.Import;
 
 internal static class DgmlParser
@@ -11,25 +9,12 @@ internal static class DgmlParser
     {
         try
         {
-            await using var stream = File.OpenRead(path);
-            using var reader = XmlReader.Create(stream, new XmlReaderSettings
-            {
-                Async = true,
-                DtdProcessing = DtdProcessing.Prohibit,
-                IgnoreComments = true,
-                IgnoreWhitespace = true,
-            });
+            using var reader = new LocalXmlReader(File.OpenRead(path));
 
             var dgmlNodes = new Dictionary<string, string>(StringComparer.Ordinal);
             var links = new List<(string Source, string Target, string Reason, string? Kind, string? Group)>();
-            while (await reader.ReadAsync())
+            while (await reader.ReadAsync(cancellationToken))
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                if (reader.NodeType != XmlNodeType.Element)
-                {
-                    continue;
-                }
-
                 if (reader.LocalName == "Node")
                 {
                     var dgmlId = RequiredAttribute(reader, "Id", path);
@@ -90,7 +75,7 @@ internal static class DgmlParser
             builder.Metadata["dgml_path"] = Path.GetFullPath(path);
             builder.Metadata["retained_size_semantics"] = "graph-model-estimate";
         }
-        catch (XmlException ex)
+        catch (LocalXmlException ex)
         {
             throw new SizospyException(
                 $"Malformed DGML '{path}' at line {ex.LineNumber}, position {ex.LinePosition}: {ex.Message}",
@@ -103,7 +88,7 @@ internal static class DgmlParser
         }
     }
 
-    private static string RequiredAttribute(XmlReader reader, string name, string path) =>
+    private static string RequiredAttribute(LocalXmlReader reader, string name, string path) =>
         reader.GetAttribute(name) ??
         throw new SizospyException($"DGML '{path}' contains a {reader.LocalName} without required '{name}'.", "malformed-dgml");
 

@@ -55,6 +55,9 @@ The NativeAOT intermediate directory contains these files:
 
 Use the scan DGML file with `--dgml`. Sizospy does not use the code-generation DGML file in this release.
 
+Sizospy parses DGML and map XML as local, namespace-agnostic streams. It does not resolve DTDs,
+external entities, namespace URLs, or other network resources.
+
 ## Import
 
 Create a database from MSTAT only:
