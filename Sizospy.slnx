@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/Sizospy.Core/Sizospy.Core.csproj" />
+  <Project Path="src/Sizospy.Cli/Sizospy.Cli.csproj" />
+  <Project Path="tests/Sizospy.Core.Tests/Sizospy.Core.Tests.csproj" />
+</Solution>

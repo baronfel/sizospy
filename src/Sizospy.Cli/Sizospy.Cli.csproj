@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>sizospy</AssemblyName>
+    <RootNamespace>Sizospy.Cli</RootNamespace>
+    <PublishAot>true</PublishAot>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>sizospy</ToolCommandName>
+    <ToolPackageRuntimeIdentifiers Condition="'$(ToolPackageRuntimeIdentifiers)' == ''">win-x64</ToolPackageRuntimeIdentifiers>
+    <RuntimeFrameworkVersion>11.0.0-rc.1.26425.128</RuntimeFrameworkVersion>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <StripSymbols>true</StripSymbols>
+    <PackageId>sizospy</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Sizospy contributors</Authors>
+    <Description>NativeAOT binary size and dominator analysis SDK tool.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/baronfel/sizospy</RepositoryUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sizospy.Core\Sizospy.Core.csproj" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>

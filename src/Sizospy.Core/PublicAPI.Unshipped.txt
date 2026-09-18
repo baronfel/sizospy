@@ -1,0 +1,275 @@
+#nullable enable
+Sizospy.DependencyEdge
+Sizospy.DependencyEdge.ConditionalGroup.get -> string?
+Sizospy.DependencyEdge.ConditionalGroup.init -> void
+Sizospy.DependencyEdge.DependencyEdge(long Id, long SourceNodeId, long TargetNodeId, string! Reason, string? ReasonKind, string? ConditionalGroup, string! Provenance) -> void
+Sizospy.DependencyEdge.Id.get -> long
+Sizospy.DependencyEdge.Id.init -> void
+Sizospy.DependencyEdge.Provenance.get -> string!
+Sizospy.DependencyEdge.Provenance.init -> void
+Sizospy.DependencyEdge.Reason.get -> string!
+Sizospy.DependencyEdge.Reason.init -> void
+Sizospy.DependencyEdge.ReasonKind.get -> string?
+Sizospy.DependencyEdge.ReasonKind.init -> void
+Sizospy.DependencyEdge.SourceNodeId.get -> long
+Sizospy.DependencyEdge.SourceNodeId.init -> void
+Sizospy.DependencyEdge.TargetNodeId.get -> long
+Sizospy.DependencyEdge.TargetNodeId.init -> void
+Sizospy.DiagnosticSeverity
+Sizospy.DiagnosticSeverity.Error = 2 -> Sizospy.DiagnosticSeverity
+Sizospy.DiagnosticSeverity.Info = 0 -> Sizospy.DiagnosticSeverity
+Sizospy.DiagnosticSeverity.Warning = 1 -> Sizospy.DiagnosticSeverity
+Sizospy.DominatorMetric
+Sizospy.DominatorMetric.DominatedNodeCount.get -> int
+Sizospy.DominatorMetric.DominatedNodeCount.init -> void
+Sizospy.DominatorMetric.DominatorMetric(long NodeId, long? ImmediateDominatorId, long RetainedSize, long MarginalRetainedSize, double? Leverage, int DominatedNodeCount, int? RootDistance, bool GraphReachable) -> void
+Sizospy.DominatorMetric.GraphReachable.get -> bool
+Sizospy.DominatorMetric.GraphReachable.init -> void
+Sizospy.DominatorMetric.ImmediateDominatorId.get -> long?
+Sizospy.DominatorMetric.ImmediateDominatorId.init -> void
+Sizospy.DominatorMetric.Leverage.get -> double?
+Sizospy.DominatorMetric.Leverage.init -> void
+Sizospy.DominatorMetric.MarginalRetainedSize.get -> long
+Sizospy.DominatorMetric.MarginalRetainedSize.init -> void
+Sizospy.DominatorMetric.NodeId.get -> long
+Sizospy.DominatorMetric.NodeId.init -> void
+Sizospy.DominatorMetric.RetainedSize.get -> long
+Sizospy.DominatorMetric.RetainedSize.init -> void
+Sizospy.DominatorMetric.RootDistance.get -> int?
+Sizospy.DominatorMetric.RootDistance.init -> void
+Sizospy.EmittedRange
+Sizospy.EmittedRange.Address.get -> ulong
+Sizospy.EmittedRange.Address.init -> void
+Sizospy.EmittedRange.ContentHash.get -> string?
+Sizospy.EmittedRange.ContentHash.init -> void
+Sizospy.EmittedRange.EmittedRange(long Id, long NodeId, string? Section, ulong Address, long Size, string? ObjectName, string? ContentHash, string! Provenance) -> void
+Sizospy.EmittedRange.Id.get -> long
+Sizospy.EmittedRange.Id.init -> void
+Sizospy.EmittedRange.NodeId.get -> long
+Sizospy.EmittedRange.NodeId.init -> void
+Sizospy.EmittedRange.ObjectName.get -> string?
+Sizospy.EmittedRange.ObjectName.init -> void
+Sizospy.EmittedRange.Provenance.get -> string!
+Sizospy.EmittedRange.Provenance.init -> void
+Sizospy.EmittedRange.Section.get -> string?
+Sizospy.EmittedRange.Section.init -> void
+Sizospy.EmittedRange.Size.get -> long
+Sizospy.EmittedRange.Size.init -> void
+Sizospy.Graph.DominatorAnalyzer
+Sizospy.Import.ImportService
+Sizospy.Import.ImportService.ImportAsync(Sizospy.ImportRequest! request, System.IProgress<string!>? progress = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Sizospy.ImportResult!>!
+Sizospy.Import.ImportService.ImportService() -> void
+Sizospy.ImportDiagnostic
+Sizospy.ImportDiagnostic.Code.get -> string!
+Sizospy.ImportDiagnostic.Code.init -> void
+Sizospy.ImportDiagnostic.ImportDiagnostic(Sizospy.DiagnosticSeverity Severity, string! Code, string! Message, string? Source = null, int? Line = null) -> void
+Sizospy.ImportDiagnostic.Line.get -> int?
+Sizospy.ImportDiagnostic.Line.init -> void
+Sizospy.ImportDiagnostic.Message.get -> string!
+Sizospy.ImportDiagnostic.Message.init -> void
+Sizospy.ImportDiagnostic.Severity.get -> Sizospy.DiagnosticSeverity
+Sizospy.ImportDiagnostic.Severity.init -> void
+Sizospy.ImportDiagnostic.Source.get -> string?
+Sizospy.ImportDiagnostic.Source.init -> void
+Sizospy.ImportModel
+Sizospy.ImportModel.BinarySize.get -> long?
+Sizospy.ImportModel.BinarySize.init -> void
+Sizospy.ImportModel.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<Sizospy.ImportDiagnostic!>!
+Sizospy.ImportModel.Diagnostics.init -> void
+Sizospy.ImportModel.Edges.get -> System.Collections.Generic.IReadOnlyList<Sizospy.DependencyEdge!>!
+Sizospy.ImportModel.Edges.init -> void
+Sizospy.ImportModel.ImportModel(System.Collections.Generic.IReadOnlyList<Sizospy.LogicalMember!>! LogicalMembers, System.Collections.Generic.IReadOnlyList<Sizospy.SizeNode!>! Nodes, System.Collections.Generic.IReadOnlyList<Sizospy.DependencyEdge!>! Edges, System.Collections.Generic.IReadOnlyList<Sizospy.EmittedRange!>! Ranges, System.Collections.Generic.IReadOnlyList<Sizospy.ImportDiagnostic!>! Diagnostics, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Metadata, long? BinarySize = null) -> void
+Sizospy.ImportModel.LogicalMembers.get -> System.Collections.Generic.IReadOnlyList<Sizospy.LogicalMember!>!
+Sizospy.ImportModel.LogicalMembers.init -> void
+Sizospy.ImportModel.Metadata.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Sizospy.ImportModel.Metadata.init -> void
+Sizospy.ImportModel.Nodes.get -> System.Collections.Generic.IReadOnlyList<Sizospy.SizeNode!>!
+Sizospy.ImportModel.Nodes.init -> void
+Sizospy.ImportModel.Ranges.get -> System.Collections.Generic.IReadOnlyList<Sizospy.EmittedRange!>!
+Sizospy.ImportModel.Ranges.init -> void
+Sizospy.ImportRequest
+Sizospy.ImportRequest.BinaryPath.get -> string?
+Sizospy.ImportRequest.BinaryPath.init -> void
+Sizospy.ImportRequest.DgmlPath.get -> string?
+Sizospy.ImportRequest.DgmlPath.init -> void
+Sizospy.ImportRequest.Force.get -> bool
+Sizospy.ImportRequest.Force.init -> void
+Sizospy.ImportRequest.ImportRequest(string! MstatPath, string! OutputPath, string? DgmlPath = null, string? MapPath = null, string? BinaryPath = null, bool Force = false) -> void
+Sizospy.ImportRequest.MapPath.get -> string?
+Sizospy.ImportRequest.MapPath.init -> void
+Sizospy.ImportRequest.MstatPath.get -> string!
+Sizospy.ImportRequest.MstatPath.init -> void
+Sizospy.ImportRequest.OutputPath.get -> string!
+Sizospy.ImportRequest.OutputPath.init -> void
+Sizospy.ImportResult
+Sizospy.ImportResult.AccountedSize.get -> long
+Sizospy.ImportResult.AccountedSize.init -> void
+Sizospy.ImportResult.BinarySize.get -> long?
+Sizospy.ImportResult.BinarySize.init -> void
+Sizospy.ImportResult.DatabasePath.get -> string!
+Sizospy.ImportResult.DatabasePath.init -> void
+Sizospy.ImportResult.EdgeCount.get -> int
+Sizospy.ImportResult.EdgeCount.init -> void
+Sizospy.ImportResult.GraphAvailable.get -> bool
+Sizospy.ImportResult.GraphAvailable.init -> void
+Sizospy.ImportResult.ImportResult(string! DatabasePath, int NodeCount, int EdgeCount, long AccountedSize, long? BinarySize, long? UnattributedSize, bool GraphAvailable, int WarningCount) -> void
+Sizospy.ImportResult.NodeCount.get -> int
+Sizospy.ImportResult.NodeCount.init -> void
+Sizospy.ImportResult.UnattributedSize.get -> long?
+Sizospy.ImportResult.UnattributedSize.init -> void
+Sizospy.ImportResult.WarningCount.get -> int
+Sizospy.ImportResult.WarningCount.init -> void
+Sizospy.KindSummary
+Sizospy.KindSummary.Count.get -> int
+Sizospy.KindSummary.Count.init -> void
+Sizospy.KindSummary.Kind.get -> string!
+Sizospy.KindSummary.Kind.init -> void
+Sizospy.KindSummary.KindSummary(string! Kind, int Count, long SelfSize) -> void
+Sizospy.KindSummary.SelfSize.get -> long
+Sizospy.KindSummary.SelfSize.init -> void
+Sizospy.LogicalMember
+Sizospy.LogicalMember.AssemblyName.get -> string?
+Sizospy.LogicalMember.AssemblyName.init -> void
+Sizospy.LogicalMember.DisplayName.get -> string!
+Sizospy.LogicalMember.DisplayName.init -> void
+Sizospy.LogicalMember.Id.get -> long
+Sizospy.LogicalMember.Id.init -> void
+Sizospy.LogicalMember.Kind.get -> Sizospy.NodeKind
+Sizospy.LogicalMember.Kind.init -> void
+Sizospy.LogicalMember.LogicalMember(long Id, string! StableId, string! DisplayName, Sizospy.NodeKind Kind, string? AssemblyName, string? NamespaceName, string? TypeName, string? MemberName) -> void
+Sizospy.LogicalMember.MemberName.get -> string?
+Sizospy.LogicalMember.MemberName.init -> void
+Sizospy.LogicalMember.NamespaceName.get -> string?
+Sizospy.LogicalMember.NamespaceName.init -> void
+Sizospy.LogicalMember.StableId.get -> string!
+Sizospy.LogicalMember.StableId.init -> void
+Sizospy.LogicalMember.TypeName.get -> string?
+Sizospy.LogicalMember.TypeName.init -> void
+Sizospy.MemberReportRow
+Sizospy.MemberReportRow.Assembly.get -> string?
+Sizospy.MemberReportRow.Assembly.init -> void
+Sizospy.MemberReportRow.CompilerIdentity.get -> string!
+Sizospy.MemberReportRow.CompilerIdentity.init -> void
+Sizospy.MemberReportRow.DisplayName.get -> string!
+Sizospy.MemberReportRow.DisplayName.init -> void
+Sizospy.MemberReportRow.DominatedNodeCount.get -> int?
+Sizospy.MemberReportRow.DominatedNodeCount.init -> void
+Sizospy.MemberReportRow.IsRoot.get -> bool
+Sizospy.MemberReportRow.IsRoot.init -> void
+Sizospy.MemberReportRow.Kind.get -> string!
+Sizospy.MemberReportRow.Kind.init -> void
+Sizospy.MemberReportRow.Leverage.get -> double?
+Sizospy.MemberReportRow.Leverage.init -> void
+Sizospy.MemberReportRow.MarginalRetainedSize.get -> long?
+Sizospy.MemberReportRow.MarginalRetainedSize.init -> void
+Sizospy.MemberReportRow.Member.get -> string?
+Sizospy.MemberReportRow.Member.init -> void
+Sizospy.MemberReportRow.MemberReportRow(long NodeId, string! StableId, string! CompilerIdentity, string! DisplayName, string! Kind, string? Assembly, string? Namespace, string? Type, string? Member, long SelfSize, long? RetainedSize, long? MarginalRetainedSize, double? Leverage, int? DominatedNodeCount, int? RootDistance, bool IsRoot, string! Provenance) -> void
+Sizospy.MemberReportRow.Namespace.get -> string?
+Sizospy.MemberReportRow.Namespace.init -> void
+Sizospy.MemberReportRow.NodeId.get -> long
+Sizospy.MemberReportRow.NodeId.init -> void
+Sizospy.MemberReportRow.Provenance.get -> string!
+Sizospy.MemberReportRow.Provenance.init -> void
+Sizospy.MemberReportRow.RetainedSize.get -> long?
+Sizospy.MemberReportRow.RetainedSize.init -> void
+Sizospy.MemberReportRow.RootDistance.get -> int?
+Sizospy.MemberReportRow.RootDistance.init -> void
+Sizospy.MemberReportRow.SelfSize.get -> long
+Sizospy.MemberReportRow.SelfSize.init -> void
+Sizospy.MemberReportRow.StableId.get -> string!
+Sizospy.MemberReportRow.StableId.init -> void
+Sizospy.MemberReportRow.Type.get -> string?
+Sizospy.MemberReportRow.Type.init -> void
+Sizospy.NodeKind
+Sizospy.NodeKind.Assembly = 2 -> Sizospy.NodeKind
+Sizospy.NodeKind.CompilerArtifact = 9 -> Sizospy.NodeKind
+Sizospy.NodeKind.Data = 7 -> Sizospy.NodeKind
+Sizospy.NodeKind.Field = 6 -> Sizospy.NodeKind
+Sizospy.NodeKind.Method = 5 -> Sizospy.NodeKind
+Sizospy.NodeKind.Namespace = 3 -> Sizospy.NodeKind
+Sizospy.NodeKind.RuntimeArtifact = 8 -> Sizospy.NodeKind
+Sizospy.NodeKind.Synthetic = 1 -> Sizospy.NodeKind
+Sizospy.NodeKind.Type = 4 -> Sizospy.NodeKind
+Sizospy.NodeKind.Unknown = 0 -> Sizospy.NodeKind
+Sizospy.ReportFilter
+Sizospy.ReportFilter.Assembly.get -> string?
+Sizospy.ReportFilter.Assembly.init -> void
+Sizospy.ReportFilter.Kind.get -> string?
+Sizospy.ReportFilter.Kind.init -> void
+Sizospy.ReportFilter.Limit.get -> int
+Sizospy.ReportFilter.Limit.init -> void
+Sizospy.ReportFilter.Name.get -> string?
+Sizospy.ReportFilter.Name.init -> void
+Sizospy.ReportFilter.Namespace.get -> string?
+Sizospy.ReportFilter.Namespace.init -> void
+Sizospy.ReportFilter.ReportFilter(string? Name = null, string? Kind = null, string? Assembly = null, string? Namespace = null, int Limit = 50, Sizospy.ReportSort Sort = Sizospy.ReportSort.Self) -> void
+Sizospy.ReportFilter.Sort.get -> Sizospy.ReportSort
+Sizospy.ReportFilter.Sort.init -> void
+Sizospy.Reporting.OutputFormat
+Sizospy.Reporting.OutputFormat.Csv = 2 -> Sizospy.Reporting.OutputFormat
+Sizospy.Reporting.OutputFormat.Json = 1 -> Sizospy.Reporting.OutputFormat
+Sizospy.Reporting.OutputFormat.Table = 0 -> Sizospy.Reporting.OutputFormat
+Sizospy.Reporting.ReportFormatter
+Sizospy.Reporting.ReportService
+Sizospy.Reporting.ReportService.GenerateWebAsync(string! outputPath, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Sizospy.Reporting.ReportService.GetDominatorsAsync(Sizospy.ReportFilter! filter, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyList<Sizospy.MemberReportRow!>!>!
+Sizospy.Reporting.ReportService.GetMembersAsync(Sizospy.ReportFilter! filter, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyList<Sizospy.MemberReportRow!>!>!
+Sizospy.Reporting.ReportService.GetSummaryAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Sizospy.SummaryReport!>!
+Sizospy.Reporting.ReportService.ReportService(string! databasePath) -> void
+Sizospy.ReportSort
+Sizospy.ReportSort.Leverage = 2 -> Sizospy.ReportSort
+Sizospy.ReportSort.Name = 3 -> Sizospy.ReportSort
+Sizospy.ReportSort.Retained = 1 -> Sizospy.ReportSort
+Sizospy.ReportSort.Self = 0 -> Sizospy.ReportSort
+Sizospy.SizeNode
+Sizospy.SizeNode.CompilerIdentity.get -> string!
+Sizospy.SizeNode.CompilerIdentity.init -> void
+Sizospy.SizeNode.DisplayName.get -> string!
+Sizospy.SizeNode.DisplayName.init -> void
+Sizospy.SizeNode.Id.get -> long
+Sizospy.SizeNode.Id.init -> void
+Sizospy.SizeNode.IsRoot.get -> bool
+Sizospy.SizeNode.IsRoot.init -> void
+Sizospy.SizeNode.Kind.get -> Sizospy.NodeKind
+Sizospy.SizeNode.Kind.init -> void
+Sizospy.SizeNode.LogicalMemberId.get -> long?
+Sizospy.SizeNode.LogicalMemberId.init -> void
+Sizospy.SizeNode.Provenance.get -> string!
+Sizospy.SizeNode.Provenance.init -> void
+Sizospy.SizeNode.SelfSize.get -> long
+Sizospy.SizeNode.SelfSize.init -> void
+Sizospy.SizeNode.SizeNode(long Id, string! StableId, string! CompilerIdentity, string! DisplayName, Sizospy.NodeKind Kind, long SelfSize, long? LogicalMemberId, string! Provenance, bool IsRoot = false) -> void
+Sizospy.SizeNode.StableId.get -> string!
+Sizospy.SizeNode.StableId.init -> void
+Sizospy.SizospyException
+Sizospy.SizospyException.Code.get -> string!
+Sizospy.SizospyException.SizospyException(string! message, string! code, System.Exception? innerException = null) -> void
+Sizospy.SummaryReport
+Sizospy.SummaryReport.AccountedSize.get -> long
+Sizospy.SummaryReport.AccountedSize.init -> void
+Sizospy.SummaryReport.BinarySize.get -> long?
+Sizospy.SummaryReport.BinarySize.init -> void
+Sizospy.SummaryReport.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<Sizospy.ImportDiagnostic!>!
+Sizospy.SummaryReport.Diagnostics.init -> void
+Sizospy.SummaryReport.EdgeCount.get -> int
+Sizospy.SummaryReport.EdgeCount.init -> void
+Sizospy.SummaryReport.GraphAvailable.get -> bool
+Sizospy.SummaryReport.GraphAvailable.init -> void
+Sizospy.SummaryReport.Kinds.get -> System.Collections.Generic.IReadOnlyList<Sizospy.KindSummary!>!
+Sizospy.SummaryReport.Kinds.init -> void
+Sizospy.SummaryReport.LogicalMemberCount.get -> int
+Sizospy.SummaryReport.LogicalMemberCount.init -> void
+Sizospy.SummaryReport.NodeCount.get -> int
+Sizospy.SummaryReport.NodeCount.init -> void
+Sizospy.SummaryReport.RetainedSizesAreEstimates.get -> bool
+Sizospy.SummaryReport.RetainedSizesAreEstimates.init -> void
+Sizospy.SummaryReport.SchemaVersion.get -> int
+Sizospy.SummaryReport.SchemaVersion.init -> void
+Sizospy.SummaryReport.SummaryReport(int SchemaVersion, int NodeCount, int EdgeCount, int LogicalMemberCount, long AccountedSize, long? BinarySize, long? UnattributedSize, bool GraphAvailable, bool RetainedSizesAreEstimates, System.Collections.Generic.IReadOnlyList<Sizospy.KindSummary!>! Kinds, System.Collections.Generic.IReadOnlyList<Sizospy.ImportDiagnostic!>! Diagnostics) -> void
+Sizospy.SummaryReport.UnattributedSize.get -> long?
+Sizospy.SummaryReport.UnattributedSize.init -> void
+static Sizospy.Graph.DominatorAnalyzer.Analyze(System.Collections.Generic.IReadOnlyList<Sizospy.SizeNode!>! nodes, System.Collections.Generic.IReadOnlyList<Sizospy.DependencyEdge!>! edges, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyDictionary<long, Sizospy.DominatorMetric!>!
+static Sizospy.Reporting.ReportFormatter.FormatBytes(long bytes) -> string!
+static Sizospy.Reporting.ReportFormatter.FormatMembers(System.Collections.Generic.IReadOnlyList<Sizospy.MemberReportRow!>! rows, Sizospy.Reporting.OutputFormat format) -> string!
+static Sizospy.Reporting.ReportFormatter.FormatSummary(Sizospy.SummaryReport! summary, Sizospy.Reporting.OutputFormat format) -> string!
