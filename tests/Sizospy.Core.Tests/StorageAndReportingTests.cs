@@ -4,9 +4,12 @@ using Microsoft.Data.Sqlite;
 
 namespace Sizospy.Core.Tests;
 
+[TestClass]
 public sealed class StorageAndReportingTests
 {
-    [Fact]
+    public TestContext TestContext { get; set; } = null!;
+
+    [TestMethod]
     public async Task DatabaseRoundTripProducesMetricsAndAllFormats()
     {
         var directory = Path.Combine(Path.GetTempPath(), $"sizospy-tests-{Guid.NewGuid():N}");
@@ -38,47 +41,47 @@ public sealed class StorageAndReportingTests
                 },
                 200);
 
-            await DatabaseWriter.WriteAsync(database, model, false, TestContext.Current.CancellationToken);
-            var conflict = await Assert.ThrowsAsync<SizospyException>(
-                () => DatabaseWriter.WriteAsync(database, model, false, TestContext.Current.CancellationToken));
-            Assert.Equal("output-conflict", conflict.Code);
+            await DatabaseWriter.WriteAsync(database, model, false, TestContext.CancellationToken);
+            var conflict = await Assert.ThrowsExactlyAsync<SizospyException>(
+                () => DatabaseWriter.WriteAsync(database, model, false, TestContext.CancellationToken));
+            Assert.AreEqual("output-conflict", conflict.Code);
 
             var service = new ReportService(database);
-            var summary = await service.GetSummaryAsync(TestContext.Current.CancellationToken);
+            var summary = await service.GetSummaryAsync(TestContext.CancellationToken);
             var rows = await service.GetMembersAsync(
                 new ReportFilter(Limit: 10, Sort: ReportSort.Retained),
-                TestContext.Current.CancellationToken);
+                TestContext.CancellationToken);
 
-            Assert.Equal(2, summary.NodeCount);
-            Assert.Equal(150, summary.AccountedSize);
-            Assert.Equal(50, summary.UnattributedSize);
-            Assert.True(summary.GraphAvailable);
-            Assert.Equal(150, rows[0].RetainedSize);
-            Assert.Contains("\"nodeCount\": 2", ReportFormatter.FormatSummary(summary, OutputFormat.Json));
-            Assert.StartsWith("metric,value\n", ReportFormatter.FormatSummary(summary, OutputFormat.Csv));
-            Assert.Contains("Accounted size:", ReportFormatter.FormatSummary(summary, OutputFormat.Table));
-            Assert.Contains("RootMethod", ReportFormatter.FormatMembers(rows, OutputFormat.Csv));
+            Assert.AreEqual(2L, summary.NodeCount);
+            Assert.AreEqual(150L, summary.AccountedSize);
+            Assert.AreEqual(50L, summary.UnattributedSize);
+            Assert.IsTrue(summary.GraphAvailable);
+            Assert.AreEqual(150L, rows[0].RetainedSize);
+            StringAssert.Contains(ReportFormatter.FormatSummary(summary, OutputFormat.Json), "\"nodeCount\": 2");
+            Assert.IsTrue(ReportFormatter.FormatSummary(summary, OutputFormat.Csv).StartsWith("metric,value\n", StringComparison.Ordinal));
+            StringAssert.Contains(ReportFormatter.FormatSummary(summary, OutputFormat.Table), "Accounted size:");
+            StringAssert.Contains(ReportFormatter.FormatMembers(rows, OutputFormat.Csv), "RootMethod");
 
             var html = Path.Combine(directory, "report.html");
-            await service.GenerateWebAsync(html, TestContext.Current.CancellationToken);
-            var content = await File.ReadAllTextAsync(html, TestContext.Current.CancellationToken);
-            Assert.Contains("Ownership treemap", content);
-            Assert.Contains("Dominator icicle", content);
-            Assert.Contains("\"n\":\"Sample.Type.Root\"", content);
-            Assert.Contains("artifact:${n.nodeId}", content);
-            Assert.DoesNotContain("https://", content);
+            await service.GenerateWebAsync(html, TestContext.CancellationToken);
+            var content = await File.ReadAllTextAsync(html, TestContext.CancellationToken);
+            StringAssert.Contains(content, "Ownership treemap");
+            StringAssert.Contains(content, "Dominator icicle");
+            StringAssert.Contains(content, "\"n\":\"Sample.Type.Root\"");
+            StringAssert.Contains(content, "artifact:${n.nodeId}");
+            Assert.IsFalse(content.Contains("https://", StringComparison.Ordinal));
 
             await using (var connection = new SqliteConnection($"Data Source={database};Pooling=False"))
             {
-                await connection.OpenAsync(TestContext.Current.CancellationToken);
+                await connection.OpenAsync(TestContext.CancellationToken);
                 await using var command = connection.CreateCommand();
                 command.CommandText = "UPDATE schema_info SET version = 999;";
-                await command.ExecuteNonQueryAsync(TestContext.Current.CancellationToken);
+                await command.ExecuteNonQueryAsync(TestContext.CancellationToken);
             }
 
-            var mismatch = await Assert.ThrowsAsync<SizospyException>(
-                () => service.GetSummaryAsync(TestContext.Current.CancellationToken));
-            Assert.Equal("schema-mismatch", mismatch.Code);
+            var mismatch = await Assert.ThrowsExactlyAsync<SizospyException>(
+                () => service.GetSummaryAsync(TestContext.CancellationToken));
+            Assert.AreEqual("schema-mismatch", mismatch.Code);
         }
         finally
         {
@@ -86,7 +89,7 @@ public sealed class StorageAndReportingTests
         }
     }
 
-    [Fact]
+    [TestMethod]
     public async Task NonDependencyEdgesDoNotEnableDominatorMetrics()
     {
         var directory = Path.Combine(Path.GetTempPath(), $"sizospy-tests-{Guid.NewGuid():N}");
@@ -108,16 +111,16 @@ public sealed class StorageAndReportingTests
                 new Dictionary<string, string>(),
                 null);
 
-            await DatabaseWriter.WriteAsync(database, model, false, TestContext.Current.CancellationToken);
+            await DatabaseWriter.WriteAsync(database, model, false, TestContext.CancellationToken);
             var service = new ReportService(database);
 
-            var summary = await service.GetSummaryAsync(TestContext.Current.CancellationToken);
+            var summary = await service.GetSummaryAsync(TestContext.CancellationToken);
             var dominators = await service.GetDominatorsAsync(
                 new ReportFilter(Limit: 10),
-                TestContext.Current.CancellationToken);
+                TestContext.CancellationToken);
 
-            Assert.False(summary.GraphAvailable);
-            Assert.Empty(dominators);
+            Assert.IsFalse(summary.GraphAvailable);
+            Assert.AreEqual(0, dominators.Count);
         }
         finally
         {
@@ -125,7 +128,7 @@ public sealed class StorageAndReportingTests
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void CsvQuotingAndOrderingAreDeterministic()
     {
         var rows = new[]
@@ -135,7 +138,7 @@ public sealed class StorageAndReportingTests
 
         var csv = ReportFormatter.FormatMembers(rows, OutputFormat.Csv);
 
-        Assert.Contains("\"A,\"\"B\"\"\"", csv);
-        Assert.EndsWith("\n", csv);
+        StringAssert.Contains(csv, "\"A,\"\"B\"\"\"");
+        Assert.IsTrue(csv.EndsWith('\n'));
     }
 }

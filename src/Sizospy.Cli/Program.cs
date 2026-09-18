@@ -27,9 +27,9 @@ internal static class SizospyCli
     {
         var command = new Command("import", "Import NativeAOT MSTAT, scan DGML, map XML, and binary data into SQLite.");
         var mstat = new Option<FileInfo>("--mstat") { Description = "Required NativeAOT .mstat managed assembly.", Required = true };
-        var dgml = new Option<FileInfo?>("--dgml") { Description = "Optional NativeAOT scan DGML for roots and retained-size analysis." };
-        var map = new Option<FileInfo?>("--map") { Description = "Optional NativeAOT XML object map." };
-        var binary = new Option<FileInfo?>("--binary") { Description = "Optional final native binary for accounted/overhead reconciliation." };
+        var dgml = new Option<FileInfo?>("--dgml") { Description = "NativeAOT scan DGML. Defaults to an adjacent <name>.scan.dgml.xml file." };
+        var map = new Option<FileInfo?>("--map") { Description = "NativeAOT XML object map. Defaults to an adjacent <name>.map.xml file." };
+        var binary = new Option<FileInfo?>("--binary") { Description = "Final native binary. Defaults to one unambiguous adjacent binary with the MSTAT name." };
         var output = new Option<FileInfo>("--output") { Description = "SQLite database to create.", Required = true };
         var force = new Option<bool>("--force") { Description = "Replace an existing output database." };
         command.Options.Add(mstat);

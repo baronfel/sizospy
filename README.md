@@ -65,6 +65,12 @@ dnx sizospy -- import `
   --output .\MyApp.sizospy.db
 ```
 
+When an optional input is omitted, Sizospy searches the MSTAT directory for matching companion files.
+
+It recognizes `<name>.scan.dgml.xml`, `<name>.map.xml`, and common native binary names for Windows, Linux, and macOS.
+
+If multiple native binaries match, Sizospy records a warning and requires `--binary` for binary reconciliation.
+
 Create a complete database with reachability, physical layout, and binary reconciliation:
 
 ```powershell
@@ -194,7 +200,9 @@ Stable IDs derive from compiler identities and logical ownership. Numeric IDs ar
 
 ## Build and test
 
-Package versions are centralized in `Directory.Packages.props`. `NuGet.Config` restricts restore to NuGet.org.
+NuGet package versions are centralized in `Directory.Packages.props`. `global.json` pins the .NET and MSTest SDKs.
+
+`NuGet.Config` maps all packages to NuGet.org. Tests use MSTest with Microsoft Testing Platform.
 
 Restore and test the solution:
 
