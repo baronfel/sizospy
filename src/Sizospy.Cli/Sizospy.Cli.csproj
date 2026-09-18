@@ -6,7 +6,7 @@
     <PublishAot>true</PublishAot>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>sizospy</ToolCommandName>
-    <ToolPackageRuntimeIdentifiers Condition="'$(ToolPackageRuntimeIdentifiers)' == ''">win-x64;win-arm64;linux-x64;linux-arm64;osx-arm64</ToolPackageRuntimeIdentifiers>
+    <RuntimeIdentifiers Condition="'$(RuntimeIdentifiers)' == ''">win-x64;win-arm64;linux-x64;linux-arm64;osx-arm64</RuntimeIdentifiers>
     <InvariantGlobalization>true</InvariantGlobalization>
     <StripSymbols>true</StripSymbols>
     <NativeDebugSymbols>false</NativeDebugSymbols>
