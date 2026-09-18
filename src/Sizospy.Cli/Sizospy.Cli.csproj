@@ -11,7 +11,7 @@
     <StripSymbols>true</StripSymbols>
     <NativeDebugSymbols>false</NativeDebugSymbols>
     <PackageId>sizospy</PackageId>
-    <Version>0.1.0</Version>
+    <ChangelogFile>$(MSBuildProjectDirectory)\..\..\CHANGELOG.md</ChangelogFile>
     <Authors>Sizospy contributors</Authors>
     <Description>NativeAOT binary size and dominator analysis SDK tool.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -19,10 +19,12 @@
     <RepositoryUrl>https://github.com/baronfel/sizospy</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Ionide.KeepAChangelog.Tasks" PrivateAssets="all" />
     <ProjectReference Include="..\Sizospy.Core\Sizospy.Core.csproj" />
     <PackageReference Include="System.CommandLine" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\CHANGELOG.md" Pack="true" PackagePath="\" />
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>

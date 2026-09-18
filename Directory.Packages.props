@@ -8,6 +8,7 @@
     <PackageVersion Include="Microsoft.Data.Sqlite.Core" Version="10.0.12" />
     <PackageVersion Include="Microsoft.NET.ILLink.Tasks" Version="11.0.0-rc.1.26425.128"
                     Condition="'$(MSBuildProjectName)' == 'Sizospy.Core'" />
+    <PackageVersion Include="Ionide.KeepAChangelog.Tasks" Version="0.3.3" />
     <PackageVersion Include="SQLitePCLRaw.provider.sqlite3" Version="3.0.5" />
     <PackageVersion Include="SQLitePCLRaw.provider.winsqlite3" Version="3.0.5" />
     <PackageVersion Include="System.CommandLine" Version="2.0.12" />
